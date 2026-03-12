@@ -59,20 +59,12 @@ export default function ModuloPage() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
   const [showReading, setShowReading] = useState(false);
+  const [selectedReadingId, setSelectedReadingId] = useState<string | null>(null);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const { getCompletedByModule } = useProgress();
 
   if (!moduleId) {
     return null;
-  }
-
-  if (showReading) {
-    return (
-      <ReadingModule
-        moduleId={moduleId}
-        onBack={() => setShowReading(false)}
-      />
-    );
   }
 
   const module = moduleInfo[moduleId];
@@ -104,6 +96,21 @@ export default function ModuloPage() {
           </Button>
         </Card>
       </div>
+    );
+  }
+
+  if (showReading) {
+    const initialReadingId =
+      selectedReadingId ??
+      readings.find((reading) => !completed.some((item) => item.readingId === reading.id))?.id ??
+      readings[0].id;
+
+    return (
+      <ReadingModule
+        moduleId={moduleId}
+        initialReadingId={initialReadingId}
+        onBack={() => setShowReading(false)}
+      />
     );
   }
 
@@ -174,7 +181,13 @@ export default function ModuloPage() {
           {/* CTA Button */}
           <Button
             size="lg"
-            onClick={() => setShowReading(true)}
+            onClick={() => {
+              const firstPendingReading =
+                readings.find((reading) => !completed.some((item) => item.readingId === reading.id)) ??
+                readings[0];
+              setSelectedReadingId(firstPendingReading.id);
+              setShowReading(true);
+            }}
             className="w-full sm:w-auto rounded-full bg-primary hover:bg-accent text-primary-foreground gap-2 shadow-md"
           >
             {completed.length > 0 ? 'Continuar leyendo' : 'Comenzar ahora'}
@@ -217,7 +230,10 @@ export default function ModuloPage() {
                 <Card
                   key={reading.id}
                   className="p-4 rounded-2xl border-border hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => setShowReading(true)}
+                  onClick={() => {
+                    setSelectedReadingId(reading.id);
+                    setShowReading(true);
+                  }}
                 >
                   <div className="flex items-center gap-4">
                     <div className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-secondary">

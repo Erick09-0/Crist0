@@ -250,7 +250,8 @@ export default function ProgresoPage() {
             <div className="space-y-6">
               {modulesMeta.map((mod) => {
                 const done = completedReadings.filter(r => r.moduleId === mod.id).length;
-                const pct = done > 0 ? 100 : 0;
+                const totalByModule = readingsData.find((moduleData) => moduleData.moduleId === mod.id)?.readings.length ?? 1;
+                const pct = Math.round((done / totalByModule) * 100);
                 const Icon = mod.icon;
                 return (
                   <div key={mod.id} className="space-y-2">
@@ -261,7 +262,7 @@ export default function ProgresoPage() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <p className="font-semibold text-foreground">{mod.title}</p>
-                          <span className="text-sm font-bold text-muted-foreground">{done}/1</span>
+                          <span className="text-sm font-bold text-muted-foreground">{done}/{totalByModule}</span>
                         </div>
                       </div>
                     </div>

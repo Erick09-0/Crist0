@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, BookOpen, Brain, Gamepad2, CheckCircle, CheckCircle2, RotateCcw, Sparkles, Target, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
@@ -14,11 +14,20 @@ import { Badge } from './ui/badge';
 
 interface ReadingModuleProps {
   moduleId: string;
+  initialReadingId?: string;
   onBack: () => void;
 }
 
-export function ReadingModule({ moduleId, onBack }: ReadingModuleProps) {
-  const [currentReadingIndex, setCurrentReadingIndex] = useState(0);
+export function ReadingModule({ moduleId, initialReadingId, onBack }: ReadingModuleProps) {
+  const readings = getReadingsByModule(moduleId);
+
+  const initialReadingIndex = useMemo(() => {
+    if (!initialReadingId) return 0;
+    const foundIndex = readings.findIndex((reading) => reading.id === initialReadingId);
+    return foundIndex >= 0 ? foundIndex : 0;
+  }, [readings, initialReadingId]);
+
+  const [currentReadingIndex, setCurrentReadingIndex] = useState(initialReadingIndex);
   const [currentStep, setCurrentStep] = useState<'reading' | 'questions' | 'activity'>('reading');
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
   const [showResults, setShowResults] = useState(false);
@@ -26,8 +35,6 @@ export function ReadingModule({ moduleId, onBack }: ReadingModuleProps) {
 
   const { recordReading, recordGame } = useProgress();
 
-  const readings = getReadingsByModule(moduleId);
-  
   if (!readings || readings.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
@@ -41,7 +48,24 @@ export function ReadingModule({ moduleId, onBack }: ReadingModuleProps) {
     );
   }
 
+  useEffect(() => {
+    setCurrentReadingIndex(initialReadingIndex);
+    setCurrentStep('reading');
+    setSelectedAnswers({});
+    setShowResults(false);
+    setActivityCompleted(false);
+  }, [initialReadingIndex]);
+
   const currentReading = readings[currentReadingIndex];
+
+  const openReadingByIndex = (readingIndex: number) => {
+    if (readingIndex < 0 || readingIndex >= readings.length) return;
+    setCurrentReadingIndex(readingIndex);
+    setCurrentStep('reading');
+    setSelectedAnswers({});
+    setShowResults(false);
+    setActivityCompleted(false);
+  };
 
   const handleAnswerSelect = (questionId: number, answerIndex: number) => {
     setSelectedAnswers(prev => ({
@@ -432,6 +456,7 @@ export function ReadingModule({ moduleId, onBack }: ReadingModuleProps) {
                     setSelectedAnswers({});
                     setShowResults(false);
                     setCurrentStep('reading');
+                    setActivityCompleted(false);
                   }}
                   variant="outline"
                   className="rounded-full gap-2"
@@ -439,14 +464,29 @@ export function ReadingModule({ moduleId, onBack }: ReadingModuleProps) {
                   <RotateCcw className="w-4 h-4" />
                   <span>Reiniciar lectura</span>
                 </Button>
-                
-                {activityCompleted && (
+
+                {activityCompleted && currentReadingIndex < readings.length - 1 && (
                   <Button
-                    onClick={onBack}
+                    onClick={() => openReadingByIndex(currentReadingIndex + 1)}
                     className="rounded-full bg-primary hover:bg-accent text-primary-foreground gap-2"
                   >
                     <CheckCircle className="w-5 h-5" />
-                    <span>Finalizar</span>
+                    <span>Siguiente lectura</span>
+                  </Button>
+                )}
+
+                {activityCompleted && (
+                  <Button
+                    onClick={onBack}
+                    variant={currentReadingIndex < readings.length - 1 ? 'outline' : 'default'}
+                    className={`rounded-full gap-2 ${
+                      currentReadingIndex < readings.length - 1
+                        ? ''
+                        : 'bg-primary hover:bg-accent text-primary-foreground'
+                    }`}
+                  >
+                    <CheckCircle className="w-5 h-5" />
+                    <span>{currentReadingIndex < readings.length - 1 ? 'Volver al módulo' : 'Finalizar módulo'}</span>
                   </Button>
                 )}
               </div>

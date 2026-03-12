@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { AnimatePresence } from 'motion/react';
-import { Brain, CheckCircle2, Circle, HelpCircle, Lightbulb, Sparkles, XCircle } from 'lucide-react';
+import { ArrowRight, Brain, CheckCircle2, Circle, HelpCircle, Lightbulb, Sparkles, XCircle } from 'lucide-react';
 import type { RiddleActivity } from '../../data/activitiesData';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
@@ -51,6 +51,8 @@ export function RiddlesGame({ activity, onComplete }: RiddlesGameProps) {
   };
 
   const checkAnswer = () => {
+    if (riddleStates[currentRiddleIndex] === 'correct') return;
+
     if (!userAnswer.trim()) {
       setFeedback({ type: 'info', text: 'Escribe una respuesta antes de verificar.' });
       return;
@@ -66,7 +68,6 @@ export function RiddlesGame({ activity, onComplete }: RiddlesGameProps) {
 
     if (isCorrect) {
       setFeedback({ type: 'success', text: `Correcto. Respuesta: ${currentRiddle.answer}` });
-      setTimeout(() => moveToNextRiddle(), 900);
       return;
     }
 
@@ -86,6 +87,9 @@ export function RiddlesGame({ activity, onComplete }: RiddlesGameProps) {
         next[currentRiddleIndex] = 'pending';
         return next;
       });
+    }
+    if (feedback?.type !== 'success') {
+      setFeedback(null);
     }
   };
 
@@ -121,21 +125,22 @@ export function RiddlesGame({ activity, onComplete }: RiddlesGameProps) {
         </div>
       </Card>
 
-      <div className="flex justify-center gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {activity.riddles.map((_, index) => {
           const state = riddleStates[index];
           return (
             <div
               key={index}
-              className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${
+              className={`rounded-xl border px-3 py-2 flex items-center justify-center gap-2 transition-all ${
                 state === 'correct'
-                  ? 'bg-primary border-primary text-primary-foreground'
+                  ? 'bg-primary text-primary-foreground border-primary'
                   : index === currentRiddleIndex
-                  ? 'bg-secondary border-foreground'
+                  ? 'bg-secondary border-foreground text-foreground'
                   : 'bg-card border-border text-muted-foreground'
               }`}
             >
-              {state === 'correct' ? <CheckCircle2 className="w-4 h-4" /> : <span className="text-xs">{index + 1}</span>}
+              {state === 'correct' ? <CheckCircle2 className="w-4 h-4" /> : <span className="text-xs font-semibold">{index + 1}</span>}
+              <span className="text-xs hidden sm:inline">Adivinanza</span>
             </div>
           );
         })}
@@ -176,6 +181,7 @@ export function RiddlesGame({ activity, onComplete }: RiddlesGameProps) {
             <div className="flex flex-wrap gap-2">
               <Button
                 onClick={checkAnswer}
+                disabled={riddleStates[currentRiddleIndex] === 'correct'}
                 className="rounded-full bg-primary hover:bg-accent text-primary-foreground"
               >
                 Verificar respuesta
@@ -224,6 +230,25 @@ export function RiddlesGame({ activity, onComplete }: RiddlesGameProps) {
                 {feedback.type === 'error' && <XCircle className="w-4 h-4 text-destructive" />}
                 {feedback.type === 'info' && <Circle className="w-4 h-4 text-muted-foreground" />}
                 <span>{feedback.text}</span>
+              </div>
+            </Card>
+          )}
+
+          {riddleStates[currentRiddleIndex] === 'correct' && (
+            <Card className="p-4 rounded-xl border border-primary/40 bg-primary/10">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <p className="text-sm">
+                  {currentRiddleIndex < activity.riddles.length - 1
+                    ? 'Muy bien. Continúa con la siguiente adivinanza.'
+                    : 'Ya resolviste todas las adivinanzas de este juego.'}
+                </p>
+                <Button
+                  onClick={moveToNextRiddle}
+                  className="rounded-full bg-primary hover:bg-accent text-primary-foreground gap-2"
+                >
+                  <span>{currentRiddleIndex < activity.riddles.length - 1 ? 'Siguiente adivinanza' : 'Finalizar juego'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
               </div>
             </Card>
           )}

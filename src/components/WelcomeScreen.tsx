@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import luminaLogo from '../img/Lumina_logo.png';
 
 interface WelcomeScreenProps {
   onStart: () => void;
@@ -57,8 +58,8 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
             >
               <Card className="overflow-hidden rounded-3xl border-none shadow-2xl">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1762475833776-fd57865db4d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMHJlYWRpbmclMjBib29rcyUyMGxpYnJhcnklMjBlZHVjYXRpb258ZW58MXx8fHwxNzcyNjYzNzc1fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                  alt="Children reading"
+                  src={luminaLogo}
+                  alt="Logo de Lumina"
                   className="w-full aspect-[4/3] object-cover"
                 />
               </Card>

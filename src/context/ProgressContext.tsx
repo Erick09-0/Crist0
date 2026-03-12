@@ -42,10 +42,28 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const [playedGames, setPlayedGames]             = useState<PlayedGame[]>([]);
 
   const recordReading = useCallback((reading: Omit<CompletedReading, 'timestamp'>) => {
-    setCompletedReadings(prev => [
-      { ...reading, timestamp: new Date() },
-      ...prev,
-    ]);
+    setCompletedReadings(prev => {
+      const readingKey = `${reading.moduleId}:${reading.readingId}`;
+      const existingIndex = prev.findIndex(
+        item => `${item.moduleId}:${item.readingId}` === readingKey
+      );
+      const timestamp = new Date();
+
+      if (existingIndex === -1) {
+        return [{ ...reading, timestamp }, ...prev];
+      }
+
+      const existing = prev[existingIndex];
+      const updated: CompletedReading = {
+        ...existing,
+        ...reading,
+        score: Math.max(existing.score, reading.score),
+        timestamp,
+      };
+
+      const withoutExisting = prev.filter((_, index) => index !== existingIndex);
+      return [updated, ...withoutExisting];
+    });
   }, []);
 
   const recordGame = useCallback((game: Omit<PlayedGame, 'timestamp'>) => {
