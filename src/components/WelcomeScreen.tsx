@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import luminaLogo from '../img/Lumina_logo.png';
+import margaritaLogo from '../img/Margarita_logo.png';
 
 interface WelcomeScreenProps {
   onStart: () => void;
@@ -46,7 +46,7 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
                 <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center">
                   <BookOpen className="w-7 h-7 text-primary-foreground" />
                 </div>
-                <h1 className="text-4xl font-bold">Lumina</h1>
+                <h1 className="text-4xl font-bold">Margarita</h1>
               </div>
             </motion.div>
 
@@ -58,8 +58,8 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
             >
               <Card className="overflow-hidden rounded-3xl border-none shadow-2xl">
                 <ImageWithFallback
-                  src={luminaLogo}
-                  alt="Logo de Lumina"
+                  src={margaritaLogo}
+                  alt="Logo de Margarita"
                   className="w-full aspect-[4/3] object-cover"
                 />
               </Card>
@@ -113,7 +113,7 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
                 <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center">
                   <BookOpen className="w-6 h-6 text-primary-foreground" />
                 </div>
-                <h1 className="text-3xl font-bold">Lumina</h1>
+                <h1 className="text-3xl font-bold">Margarita</h1>
               </div>
             </motion.div>
 
@@ -126,7 +126,7 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full">
                 <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">Bienvenido a Lumina</span>
+                <span className="text-sm font-medium text-primary">Bienvenido a Margarita</span>
               </div>
               <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
                 Descubre el placer de leer

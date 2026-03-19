@@ -1,5 +1,5 @@
 **Add your own guidelines here**
-# Lumina – UI/UX Guidelines (Web Content Hub)
+# Margarita – UI/UX Guidelines (Web Content Hub)
 
 ## Design goal
 - The product must feel like a **Content Hub** (browse → pick → detail → continue), inspired by reading/streaming apps:
@@ -26,7 +26,7 @@
 - Surfaces: white (#FFFFFF).
 - Borders: very subtle gray (e.g., #E5E7EB).
 - Text: primary dark (e.g., #111827), secondary gray (e.g., #6B7280).
-- Single accent color: **Lumina Sky Blue (#0EA5E9)** (buttons/active states). Avoid extra brand colors.
+- Single accent color: **Margarita Sky Blue (#0EA5E9)** (buttons/active states). Avoid extra brand colors.
 - Radius:
   - Cards: 16–24
   - Pill buttons: 999 (fully rounded)
@@ -46,7 +46,7 @@
 
 ## Navigation (Web)
 - **Sticky topbar** (64px):
-  - Left: logo + “Lumina”
+  - Left: logo + “Margarita”
   - Center: navigation (Home, My Games, My Progress)
   - Right: avatar + menu
 - No bottom navigation on desktop. (Mobile can have it, but it’s not the primary target.)
@@ -96,7 +96,7 @@ Must include:
 - Active state uses pill fill or subtle background. Don’t use a dropdown for 2–3 options.
 
 ### Buttons
-- Primary: filled Lumina Sky Blue, white text, pill shape.
+- Primary: filled Margarita Sky Blue, white text, pill shape.
 - Secondary: subtle outline, white background.
 - Tertiary/Ghost: text + icon only.
 - Rule: **one primary CTA per section** (avoid multiple competing CTAs).

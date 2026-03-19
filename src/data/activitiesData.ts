@@ -5,6 +5,7 @@ import milesImage from '../img/Miles.jpg';
 // Tipos de actividades
 export type ActivityType = 'maze' | 'riddles' | 'word-games' | 'word-search';
 export type QuestionType = 'literal' | 'inferencial' | 'critica';
+export type ReadingCategory = QuestionType;
 
 // Interfaces para preguntas de comprensión lectora
 export interface Question {
@@ -72,6 +73,7 @@ export interface Reading {
   imageUrl: string;
   activity: Activity;
   questions: Question[];
+  readingCategory?: ReadingCategory;
 }
 
 export interface ModuleReadings {
@@ -246,6 +248,25 @@ function ensureTenQuestionsForReading(reading: Reading): Reading {
     ...reading,
     questions: [...normalizedQuestions, ...extraQuestions],
   };
+}
+
+const readingCategoryOrder: ReadingCategory[] = ['literal', 'inferencial', 'critica'];
+
+function getReadingCategoryByIndex(index: number): ReadingCategory {
+  return readingCategoryOrder[index % readingCategoryOrder.length];
+}
+
+export function getReadingCategoryLabel(category: ReadingCategory): string {
+  switch (category) {
+    case 'literal':
+      return 'Lectura literal';
+    case 'inferencial':
+      return 'Lectura inferencial';
+    case 'critica':
+      return 'Lectura crítica';
+    default:
+      return 'Lectura';
+  }
 }
 
 // Base de datos de lecturas con actividades
@@ -934,7 +955,10 @@ La aldea entera estaba agradecida. Pero Miguel solo dijo: "Ser médico no es sol
 // Función helper para obtener lecturas por módulo
 export const readingsData: ModuleReadings[] = baseReadingsData.map((moduleData) => ({
   ...moduleData,
-  readings: moduleData.readings.map((reading) => ensureTenQuestionsForReading(reading)),
+  readings: moduleData.readings.map((reading, readingIndex) => ({
+    ...ensureTenQuestionsForReading(reading),
+    readingCategory: getReadingCategoryByIndex(readingIndex),
+  })),
 }));
 
 export function getReadingsByModule(moduleId: string): Reading[] {

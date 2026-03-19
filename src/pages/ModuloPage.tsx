@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ReadingModule } from '../components/ReadingModule';
-import { getReadingsByModule } from '../data/activitiesData';
+import { getReadingCategoryLabel, getReadingsByModule } from '../data/activitiesData';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -245,7 +245,14 @@ export default function ModuloPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-1">
-                        <h4 className="font-semibold line-clamp-1">{reading.title}</h4>
+                        <div className="min-w-0">
+                          <h4 className="font-semibold line-clamp-1">{reading.title}</h4>
+                          {reading.readingCategory && (
+                            <Badge variant="outline" className="rounded-full mt-1">
+                              {getReadingCategoryLabel(reading.readingCategory)}
+                            </Badge>
+                          )}
+                        </div>
                         {isCompleted && (
                           <Badge variant="outline" className="rounded-full flex-shrink-0">
                             <Star className="w-3 h-3 mr-1 fill-current" />

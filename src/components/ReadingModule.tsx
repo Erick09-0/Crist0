@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, BookOpen, Brain, Gamepad2, CheckCircle, CheckCircle2, RotateCcw, Sparkles, Target, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { getReadingsByModule } from '../data/activitiesData';
+import { getReadingCategoryLabel, getReadingsByModule } from '../data/activitiesData';
 import { MazeGame } from './activities/MazeGame';
 import { RiddlesGame } from './activities/RiddlesGame';
 import { WordGamesActivity } from './activities/WordGamesActivity';
@@ -129,32 +129,6 @@ export function ReadingModule({ moduleId, initialReadingId, onBack }: ReadingMod
     }
   };
 
-  const getQuestionTypeLabel = (type: 'literal' | 'inferencial' | 'critica') => {
-    switch (type) {
-      case 'literal':
-        return 'Literal';
-      case 'inferencial':
-        return 'Inferencial';
-      case 'critica':
-        return 'Critica';
-      default:
-        return 'Pregunta';
-    }
-  };
-
-  const getQuestionTypeClass = (type: 'literal' | 'inferencial' | 'critica') => {
-    switch (type) {
-      case 'literal':
-        return 'bg-secondary text-foreground';
-      case 'inferencial':
-        return 'bg-accent/20 text-foreground';
-      case 'critica':
-        return 'bg-primary/20 text-foreground';
-      default:
-        return 'bg-secondary text-foreground';
-    }
-  };
-
   const answeredCount = Object.keys(selectedAnswers).length;
   const totalQuestions = currentReading.questions.length;
   const questionProgress = Math.round((answeredCount / totalQuestions) * 100);
@@ -249,6 +223,11 @@ export function ReadingModule({ moduleId, initialReadingId, onBack }: ReadingMod
               {/* Title */}
               <div className="text-center">
                 <h1 className="text-3xl font-bold">{currentReading.title}</h1>
+                {currentReading.readingCategory && (
+                  <div className="mt-2 inline-flex text-xs px-3 py-1.5 rounded-full bg-primary/10 text-foreground">
+                    {getReadingCategoryLabel(currentReading.readingCategory)}
+                  </div>
+                )}
               </div>
 
               {/* Text */}
@@ -319,9 +298,6 @@ export function ReadingModule({ moduleId, initialReadingId, onBack }: ReadingMod
                           {qIndex + 1}
                         </div>
                         <div className="flex-1 space-y-2">
-                          <div className={`inline-flex text-xs px-2.5 py-1 rounded-full ${getQuestionTypeClass(question.type)}`}>
-                            {getQuestionTypeLabel(question.type)}
-                          </div>
                           <h3 className="text-base font-medium leading-relaxed">
                             {question.question}
                           </h3>
